@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLSS - Ultimate Sword Fighting Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #E67E22;
+            --dark-orange: #D35400;
+            --gold: #F1C40F;
+            --dark-gold: #B7950B;
+            --bg-dark: #1A1A1A;
+            --bg-darker: #0D0D0D;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-darker);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #2C1810 50%, var(--bg-darker) 100%);
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+            box-shadow: 0 0 10px var(--gold), 0 0 20px var(--primary-orange);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-orange);
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--primary-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(230, 126, 34, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .hero-logo {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 30px;
+            position: relative;
+            animation: pulse 2s infinite ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(230, 126, 34, 0.5)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(230, 126, 34, 0.8)); }
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+        }
+
+        /* SVG Logo Fallback */
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--primary-orange) 50%, var(--dark-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--dark-orange) 100%);
+            color: white;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(230, 126, 34, 0.5);
+            border: 3px solid var(--gold);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(230, 126, 34, 0.7);
+        }
+
+        /* Live Status Badge */
+        .live-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            margin-bottom: 30px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 50px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(0,0,0,0.8) 100%);
+            border: 2px solid var(--primary-orange);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(230, 126, 34, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .feature-card p {
+            color: #aaa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 50px;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+            background: linear-gradient(180deg, transparent 0%, rgba(230, 126, 34, 0.1) 50%, transparent 100%);
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--gold);
+            display: block;
+            text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .loading {
+            animation: pulse 1s infinite;
+        }
+
+        .error {
+            color: #ff4444;
+            font-size: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 50px;
+            text-align: center;
+            border-top: 2px solid var(--primary-orange);
+            background: rgba(0,0,0,0.9);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--primary-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-orange);
+            color: white;
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        footer p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero-logo { width: 200px; height: 200px; }
+            .nav-links { display: none; }
+            .features { padding: 50px 20px; }
+            .stats { gap: 40px; }
+            .stat-number { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation" id="sparksContainer"></div>
+
+    <nav>
+        <div class="logo-text">NLSS</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#stats">Stats</a></li>
+            <li><a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank">Play Now</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="live-status">
+            <div class="live-dot"></div>
+            <span>LIVE GAME DATA</span>
+        </div>
+        <div class="hero-logo">
+            <!-- Try to load the image, fallback to text if it fails -->
+            <img src="nlss_logo.png" alt="NLSS Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'font-family: Orbitron; font-size: 4rem; color: #F1C40F;\'>NLSS</div>';">
+        </div>
+        <h1>NLSS</h1>
+        <p>Enter the ultimate sword fighting arena. Master your blade, defeat your enemies, and become the legendary warrior in the most intense Roblox combat experience.</p>
+        <a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" class="cta-button">⚔️ Play Now on Roblox</a>
+    </section>
+
+    <section class="features" id="features">
+        <h2 class="section-title">Game Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚔️</div>
+                <h3>Intense Combat</h3>
+                <p>Fast-paced sword fighting mechanics with combo systems, parries, and special moves. Every battle tests your skill and reflexes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Ranked Matches</h3>
+                <p>Climb the leaderboard in competitive ranked mode. Prove you're the best warrior and earn exclusive rewards.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Unique Abilities</h3>
+                <p>Unlock and master special powers and abilities. Customize your fighting style to dominate the arena.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗡️</div>
+                <h3>Legendary Weapons</h3>
+                <p>Collect 7 unique swords with different stats and designs. Show off your arsenal to other players.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Team Battles</h3>
+                <p>Join forces with friends in epic team battles. Coordinate strategies and conquer the battlefield together.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Customization</h3>
+                <p>Personalize your warrior with skins, emotes, and gear. Stand out from the crowd with your unique style.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats" id="stats">
+        <div class="stat-item">
+            <span class="stat-number loading" id="activePlayers">Loading...</span>
+            <span class="stat-label">Active Players</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number loading" id="gameVisits">Loading...</span>
+            <span class="stat-label">Game Visits</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="swordCount">7</span>
+            <span class="stat-label">Unique Swords</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="gameModes">Coming Soon</span>
+            <span class="stat-label">Game Modes</span>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="#" title="Discord">💬</a>
+            <a href="#" title="Twitter">🐦</a>
+            <a href="#" title="YouTube">📺</a>
+            <a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" title="Roblox">🎮</a>
+        </div>
+        <p>© 2026 NLSS. All rights reserved. Made with ⚔️ for Roblox warriors.</p>
+    </footer>
+
+    <script>
+        // Generate floating sparks
+        const sparksContainer = document.getElementById('sparksContainer');
+        for (let i = 0; i < 20; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'spark';
+            spark.style.left = Math.random() * 100 + '%';
+            spark.style.animationDelay = Math.random() * 6 + 's';
+            spark.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            sparksContainer.appendChild(spark);
+        }
+
+        // Roblox Game Configuration
+        const PLACE_ID = '129483753300243';
+
+        // Function to fetch live game data from Roblox API using CORS proxy
+        async function fetchRobloxData() {
+            try {
+                // Using a CORS proxy to bypass browser restrictions
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+
+                // First, get the universe ID from place ID
+                const universeApiUrl = `https://apis.roblox.com/universes/v1/places/${PLACE_ID}/universe`;
+                const universeResponse = await fetch(proxyUrl + encodeURIComponent(universeApiUrl));
+
+                if (!universeResponse.ok) throw new Error('Failed to fetch universe ID');
+                const universeDataRaw = await universeResponse.json();
+                const universeData = JSON.parse(universeDataRaw.contents);
+                const universeId = universeData.universeId;
+
+                // Then, get the game data using universe ID
+                const gameApiUrl = `https://games.roblox.com/v1/games?universeIds=${universeId}`;
+                const gameResponse = await fetch(proxyUrl + encodeURIComponent(gameApiUrl));
+
+                if (!gameResponse.ok) throw new Error('Failed to fetch game data');
+                const gameDataRaw = await gameResponse.json();
+                const gameData = JSON.parse(gameDataRaw.contents);
+
+                if (gameData.data && gameData.data.length > 0) {
+                    const game = gameData.data[0];
+                    return {
+                        playing: game.playing || 0,
+                        visits: game.visits || 0,
+                        name: game.name,
+                        updated: game.updated
+                    };
+                }
+                throw new Error('No game data found');
+            } catch (error) {
+                console.error('Error fetching Roblox data:', error);
+                return null;
+            }
+        }
+
+        // Update stats on page
+        async function updateStats() {
+            const activePlayersEl = document.getElementById('activePlayers');
+            const gameVisitsEl = document.getElementById('gameVisits');
+
+            const data = await fetchRobloxData();
+
+            if (data) {
+                // Animate the numbers
+                animateValue(activePlayersEl, 0, data.playing, 1000);
+                animateValue(gameVisitsEl, 0, data.visits, 1500);
+
+                // Remove loading class
+                activePlayersEl.classList.remove('loading');
+                gameVisitsEl.classList.remove('loading');
+            } else {
+                // If API fails, show placeholder data
+                activePlayersEl.textContent = '0';
+                gameVisitsEl.textContent = '0';
+                activePlayersEl.classList.remove('loading');
+                gameVisitsEl.classList.remove('loading');
+            }
+        }
+
+        // Number animation function
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                obj.textContent = value.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.textContent = end.toLocaleString();
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Fetch data immediately when page loads
+        updateStats();
+
+        // Refresh data every 30 seconds to keep it live
+        setInterval(updateStats, 30000);
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-logo');
+            if (parallax) {
+                parallax.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
