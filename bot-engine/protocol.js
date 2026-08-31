@@ -3,8 +3,7 @@
  * Encodes client→server packets, decodes server→client packets.
  */
 
-const PROTOCOL_VERSION = 23;
-const CLIENT_KEY = 154669603;
+const { PROTOCOL_VERSION, CLIENT_VERSION, murmur2, rotateKey, xorBuffer, lz4Decompress } = require("./crypto");
 
 // ═══ OUTGOING (client → server) ═══════════════════════════════════════════
 
@@ -16,11 +15,11 @@ function pHandshake(version = PROTOCOL_VERSION) {
   return b;
 }
 
-/** Packet 255 — client key handshake, sent right after 254 */
-function pClientKey(key = CLIENT_KEY) {
+/** Packet 255 — client version, sent right after 254 */
+function pClientKey(v = CLIENT_VERSION) {
   const b = Buffer.alloc(5);
   b.writeUInt8(255, 0);
-  b.writeUInt32LE(key, 1);
+  b.writeUInt32LE(v, 1);
   return b;
 }
 
@@ -45,12 +44,12 @@ function pSpawn(name = "") {
 }
 
 /** Packet 16 — move toward world coordinates */
-function pMove(x, y) {
+function pMove(x, y, key = 0) {
   const b = Buffer.alloc(13);
   b.writeUInt8(16, 0);
   b.writeInt32LE(Math.round(x), 1);
   b.writeInt32LE(Math.round(y), 5);
-  b.writeUInt32LE(0, 9);
+  b.writeUInt32LE(key >>> 0, 9);
   return b;
 }
 
@@ -62,6 +61,19 @@ function pSplit() {
 /** Packet 21 — eject mass / feed (W key) */
 function pEject() {
   return Buffer.from([21]);
+}
+
+/** 241 — encryption handshake: [uint32 decryptionKey][cstring serverVersion] */
+function parseCryptoHandshake(buf) {
+  const decryptionKey = buf.readUInt32LE(1);
+  let o = 5, s = "";
+  while (o < buf.length) { const c = buf.readUInt8(o++); if (c === 0) break; s += String.fromCharCode(c); }
+  return { decryptionKey, serverVersion: s };
+}
+
+/** encryptionKey = murmur2(serverPath + serverVersion, 255) */
+function deriveEncryptionKey(serverPath, serverVersion) {
+  return murmur2(serverPath + serverVersion, 255);
 }
 
 /** Packet 1 — spectate mode */
@@ -91,6 +103,8 @@ function decode(data) {
       case 49:  return decodeLeaderboard(buf);
       case 64:  return decodeMapSize(buf);
       case 240: return { type: "wrapped" };
+      case 241: return { type: "crypto_handshake", ...parseCryptoHandshake(buf) };
+      case 242: return { type: "spawn_now" };
       case 254: return { type: "server_hello" };
       case 255: return { type: "server_key" };
       default:  return { type: "unknown", id };
@@ -128,11 +142,16 @@ function decodeWorldUpdate(buf) {
     if (o >= buf.length) break;
     const flags = buf.readUInt8(o); o += 1;
 
+    let ext = 0;
+    if (flags & 128) { ext = buf.readUInt8(o); o += 1; }
+
     const isVirus   = (flags & 0x01) !== 0;
     const hasColor  = (flags & 0x02) !== 0;
     const hasSkin   = (flags & 0x04) !== 0;
     const hasName   = (flags & 0x08) !== 0;
-    const isEjected = (flags & 0x20) !== 0;
+    const isPellet  = (ext   & 0x01) !== 0;
+    const isFriend  = (ext   & 0x02) !== 0;
+    const isEjected = isPellet;
 
     let color = null, skin = null, name = null;
 
@@ -153,7 +172,8 @@ function decodeWorldUpdate(buf) {
       o += 2;
     }
 
-    cells.push({ cellId, x, y, size, isVirus, isEjected, color, skin, name });
+    if (ext & 0x04) o += 4;
+    cells.push({ cellId, x, y, size, isVirus, isEjected, isPellet, isFriend, color, skin, name });
   }
 
   // ── Removed cell ids ──
@@ -206,7 +226,8 @@ function decodeLeaderboard(buf) {
 }
 
 module.exports = {
-  PROTOCOL_VERSION, CLIENT_KEY,
+  PROTOCOL_VERSION, CLIENT_VERSION,
   pHandshake, pClientKey, pToken, pSpawn, pMove, pSplit, pEject, pSpectate, pExplode,
-  decode,
+  decode, parseCryptoHandshake, deriveEncryptionKey,
+  murmur2, rotateKey, xorBuffer, lz4Decompress,
 };

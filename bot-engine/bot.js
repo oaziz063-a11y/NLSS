@@ -45,6 +45,11 @@ class Bot {
     this.respawns   = 0;
     this.killed     = false;
 
+    this.encKey    = 0;   // outgoing XOR key (rotates per send)
+    this.decKey    = 0;   // incoming XOR key
+    this.serverVer = null;
+    this.serverPath = opts.serverPath || "";  // host+path, needed for key derivation
+
     this._tick = null;
     this._retry = null;
   }
@@ -67,13 +72,23 @@ class Bot {
   /** one-shot command from the control panel */
   command(cmd) {
     if (!this._live()) return;
-    if (cmd === "split")   this.ws.send(P.pSplit());
-    if (cmd === "eject")   this.ws.send(P.pEject());
-    if (cmd === "explode") this.ws.send(P.pExplode());
+    if (cmd === "split")   this._send(P.pSplit());
+    if (cmd === "eject")   this._send(P.pEject());
+    if (cmd === "explode") this._send(P.pExplode());
     if (cmd === "respawn") this._spawn();
   }
 
   _live() { return this.ws && this.ws.readyState === WebSocket.OPEN; }
+
+  /** send with XOR encryption + key rotation (raw for pre-241 handshake) */
+  _send(buf, raw = false) {
+    if (!this._live()) return;
+    if (!raw && this.encKey) {
+      buf = P.xorBuffer(buf, this.encKey);
+      this.encKey = P.rotateKey(this.encKey);
+    }
+    this.ws.send(buf);
+  }
 
   _nick() {
     if (this.nickMode === "blank") return "";
@@ -103,11 +118,11 @@ class Bot {
     this.ws = ws;
 
     ws.on("open", () => {
+      // handshake is sent unencrypted; server replies 241 with the keys
       ws.send(P.pHandshake());
       ws.send(P.pClientKey());
       const tok = P.pToken(this.token);
       if (tok) ws.send(tok);
-      setTimeout(() => this._spawn(), 250);
     });
 
     ws.on("message", (d) => this._onMessage(d));
@@ -127,6 +142,8 @@ class Bot {
     clearInterval(this._tick);
     this.ownIds.clear();
     this.cells.clear();
+    this.encKey = 0;
+    this.decKey = 0;
     this._retryConnect();
   }
 
@@ -137,7 +154,7 @@ class Bot {
     if (this.respawns > MAX_RESPAWNS) { this.state = "offline"; return; }
     this.respawns++;
     this.ownIds.clear();
-    this.ws.send(P.pSpawn(this._nick()));
+    this._send(P.pSpawn(this._nick()));
     this.state = "alive";
     clearInterval(this._tick);
     this._tick = setInterval(() => this._act(), TICK_MS);
@@ -168,10 +185,10 @@ class Bot {
   /** run at the target, eject when close */
   _feedTarget(me) {
     const t = this.target || this._mapCenter();
-    this.ws.send(P.pMove(t.x, t.y));
+    this._send(P.pMove(t.x, t.y, this.decKey));
     const d = this._dist(me, t);
     if (d < FEED_RANGE) {
-      this.ws.send(P.pEject());
+      this._send(P.pEject());
       this.fedCount++;
       this.onEvent("fed", this.index);
     }
@@ -187,8 +204,8 @@ class Bot {
       if (d < bestD) { bestD = d; best = c; }
     }
     const t = best || this.target || this._mapCenter();
-    this.ws.send(P.pMove(t.x, t.y));
-    if (bestD < FEED_RANGE) { this.ws.send(P.pEject()); this.fedCount++; }
+    this._send(P.pMove(t.x, t.y, this.decKey));
+    if (bestD < FEED_RANGE) { this._send(P.pEject()); this.fedCount++; }
   }
 
   /** eat pellets to grow before feeding */
@@ -201,7 +218,7 @@ class Bot {
       if (d < bestD) { bestD = d; best = c; }
     }
     const t = best || this._mapCenter();
-    this.ws.send(P.pMove(t.x, t.y));
+    this._send(P.pMove(t.x, t.y, this.decKey));
   }
 
   _mapCenter() {
@@ -229,9 +246,30 @@ class Bot {
   // ── packet handling ────────────────────────────────────────────────────
 
   _onMessage(data) {
-    const p = P.decode(data);
+    let buf = Buffer.isBuffer(data) ? data : Buffer.from(data);
+
+    // everything after the 241 handshake is XOR'd
+    if (this.decKey) buf = P.xorBuffer(buf, (this.decKey ^ P.CLIENT_VERSION) >>> 0);
+
+    // opcode 255 wraps an LZ4-compressed inner message
+    if (buf.length > 5 && buf.readUInt8(0) === 255) {
+      const outLen = buf.readUInt32LE(1);
+      buf = P.lz4Decompress(buf.slice(5), outLen);
+    }
+
+    const p = P.decode(buf);
 
     switch (p.type) {
+      case "crypto_handshake":
+        this.decKey    = p.decryptionKey;
+        this.serverVer = p.serverVersion;
+        this.encKey    = P.deriveEncryptionKey(this.serverPath, p.serverVersion);
+        break;
+
+      case "spawn_now":
+        this._spawn();
+        break;
+
       case "map_size":
         this.map = p;
         break;
