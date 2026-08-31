@@ -160,14 +160,19 @@ export default function App() {
         <section className="col">
           <div className="card">
             <h3>Session</h3>
-            <label>Party link or server IP</label>
-            <input value={party} onChange={(e) => setParty(e.target.value)}
-              placeholder="?party=SJPCXC  or  34.87.12.44:443" disabled={st.running} />
-            <div className="hint">Party codes need resolving and may fail. Pasting the raw server IP:PORT from your mod always works.</div>
+            <label>Region — must match your game</label>
+            <select value={region} onChange={(e) => setRegion(e.target.value)} disabled={st.running}>
+              {REGIONS.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+            </select>
 
-            <label>Your UID or in-game name</label>
+            <label>Your UID</label>
+
             <input className="mono" value={uid} onChange={(e) => setUid(e.target.value)}
               placeholder="275ed4c0-dc5d-4c..." disabled={st.running} />
+
+            <label>Party link or server IP <span className="opt">optional</span></label>
+            <input value={party} onChange={(e) => setParty(e.target.value)}
+              placeholder="?party=SJPCXC  or  34.87.12.44:443" disabled={st.running} />
 
             <div className="row-between">
               <label>Bots</label><span className="num">{count}</span>
@@ -175,12 +180,6 @@ export default function App() {
             <input type="range" min={1} max={450} value={count}
               onChange={(e) => rescale(+e.target.value)} />
             <div className="ticks"><span>1</span><span>150</span><span>450</span></div>
-
-            <label>Region — must match your game</label>
-            <select value={region} onChange={(e) => setRegion(e.target.value)} disabled={st.running}>
-              {REGIONS.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-            </select>
-            <div className="hint">Set this to the same region shown in your mod's Select Region screen.</div>
 
             <label>Nicknames</label>
             <div className="seg">

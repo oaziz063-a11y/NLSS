@@ -53,6 +53,13 @@ async function resolveParty(rawKey, region = "auto") {
     return { server: direct[1], token: "", key: "direct" };
   }
 
+  // ── Region-only mode: no party key, resolve the region's game server ──
+  if (!raw) {
+    const srv = await resolveRegion(region);
+    if (srv) return { server: srv, token: "", key: "region" };
+    throw new Error(`No server known for region ${region}. Provide a server IP:PORT instead.`);
+  }
+
   const m = raw.match(/[?&]party=([A-Z0-9]{4,12})/i);
   const key = m ? m[1].toUpperCase() : raw.toUpperCase();
 
@@ -80,4 +87,20 @@ async function resolveParty(rawKey, region = "auto") {
   throw new Error(`Could not resolve party key "${key}". All endpoints failed.`);
 }
 
-module.exports = { resolveParty };
+/**
+ * Region → game server address.
+ * Populate REGION_SERVERS once a working address per region is known.
+ */
+const REGION_SERVERS = {
+  // "eu-west-3": "1.2.3.4:443",
+};
+
+async function resolveRegion(region) {
+  if (REGION_SERVERS[region]) {
+    console.log(`[resolver] Region ${region} -> ${REGION_SERVERS[region]}`);
+    return REGION_SERVERS[region];
+  }
+  return null;
+}
+
+module.exports = { resolveParty, resolveRegion, REGION_SERVERS };

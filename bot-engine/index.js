@@ -48,7 +48,6 @@ function auth(req, res, next) {
 // ── start ────────────────────────────────────────────────────────────────
 app.post("/start", auth, async (req, res) => {
   const { partyKey, uid, botCount = 100, mode = "feed", nickMode = "varied", region = "auto" } = req.body || {};
-  if (!partyKey) return res.status(400).json({ error: "partyKey required" });
   if (!uid)      return res.status(400).json({ error: "uid required" });
 
   if (session.running) stopAll();
@@ -58,7 +57,7 @@ app.post("/start", auth, async (req, res) => {
 
   let resolved;
   try {
-    resolved = await resolveParty(partyKey, region);
+    resolved = await resolveParty(partyKey || "", region);
   } catch (e) {
     log("error", e.message);
     return res.status(502).json({ error: e.message, logs: session.logs });
