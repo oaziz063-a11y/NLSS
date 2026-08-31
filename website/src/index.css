@@ -84,3 +84,9 @@ button:disabled{opacity:.4;cursor:not-allowed}
 
 @media(max-width:820px){main{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 .hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.45}
+select{width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--border);
+  background:var(--input);color:var(--text);font-size:13px;outline:none;appearance:none;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23767e8f' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center}
+select:focus{border-color:var(--accent)}
+select:disabled{opacity:.5}

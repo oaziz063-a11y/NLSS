@@ -47,18 +47,18 @@ function auth(req, res, next) {
 
 // ── start ────────────────────────────────────────────────────────────────
 app.post("/start", auth, async (req, res) => {
-  const { partyKey, uid, botCount = 100, mode = "feed", nickMode = "varied" } = req.body || {};
+  const { partyKey, uid, botCount = 100, mode = "feed", nickMode = "varied", region = "auto" } = req.body || {};
   if (!partyKey) return res.status(400).json({ error: "partyKey required" });
   if (!uid)      return res.status(400).json({ error: "uid required" });
 
   if (session.running) stopAll();
 
   session.logs = [];
-  log("info", `Resolving party ${partyKey}...`);
+  log("info", `Resolving ${partyKey} (region ${region})...`);
 
   let resolved;
   try {
-    resolved = await resolveParty(partyKey);
+    resolved = await resolveParty(partyKey, region);
   } catch (e) {
     log("error", e.message);
     return res.status(502).json({ error: e.message, logs: session.logs });

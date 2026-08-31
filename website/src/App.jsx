@@ -10,6 +10,20 @@ const MODES = [
   { id: "idle",         label: "Idle",          desc: "Stay connected, do nothing" },
 ];
 
+const REGIONS = [
+  { id: "auto",            label: "Automatic" },
+  { id: "us-east-1",       label: "US East 1" },
+  { id: "us-east-2",       label: "US East 2" },
+  { id: "us-west-1",       label: "US West 1" },
+  { id: "eu-west-1",       label: "EU West 1" },
+  { id: "eu-west-3",       label: "EU West 3" },
+  { id: "eu-central-1",    label: "EU Central 1" },
+  { id: "ap-northeast-1",  label: "AP Northeast 1" },
+  { id: "ap-southeast-1",  label: "AP Southeast 1" },
+  { id: "ap-south-1",      label: "AP South 1" },
+  { id: "sa-east-1",       label: "SA East 1" },
+];
+
 const NICKS = [
   { id: "varied",  label: "Varied" },
   { id: "uniform", label: "All same" },
@@ -36,6 +50,7 @@ export default function App() {
   const [count, setCount] = useState(100);
   const [mode, setMode] = useState("feed");
   const [nickMode, setNickMode] = useState("varied");
+  const [region, setRegion] = useState(localStorage.getItem("region") || "eu-west-3");
 
   const [st, setSt] = useState({ running: false, alive: 0, dead: 0, connecting: 0, offline: 0, totalFed: 0, botMass: 0, total: 0, uptime: 0, logs: [] });
   const [busy, setBusy] = useState(false);
@@ -87,7 +102,8 @@ export default function App() {
     try {
       localStorage.setItem("party", party);
       localStorage.setItem("uid", uid);
-      await post("/start", { partyKey: party, uid, botCount: count, mode, nickMode });
+      localStorage.setItem("region", region);
+      await post("/start", { partyKey: party, uid, botCount: count, mode, nickMode, region });
       poll();
     } catch (e) { setErr(e.message); }
     finally { setBusy(false); }
@@ -159,6 +175,12 @@ export default function App() {
             <input type="range" min={1} max={450} value={count}
               onChange={(e) => rescale(+e.target.value)} />
             <div className="ticks"><span>1</span><span>150</span><span>450</span></div>
+
+            <label>Region — must match your game</label>
+            <select value={region} onChange={(e) => setRegion(e.target.value)} disabled={st.running}>
+              {REGIONS.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+            </select>
+            <div className="hint">Set this to the same region shown in your mod's Select Region screen.</div>
 
             <label>Nicknames</label>
             <div className="seg">

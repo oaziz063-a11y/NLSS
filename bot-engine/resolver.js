@@ -42,7 +42,7 @@ function looksLikeServer(body) {
   return /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}$/.test(first.trim());
 }
 
-async function resolveParty(rawKey) {
+async function resolveParty(rawKey, region = "auto") {
   const raw = String(rawKey).trim();
 
   // ── Direct server address: "1.2.3.4:443" or "?ip=1.2.3.4:443" ──
