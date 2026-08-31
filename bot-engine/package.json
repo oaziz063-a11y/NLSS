@@ -1,0 +1,14 @@
+{
+  "name": "agario-bot-engine",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "probe": "node probe.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "ws": "^8.21.3"
+  }
+}

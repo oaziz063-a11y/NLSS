@@ -1,0 +1,19 @@
+[build]
+  builder = "NIXPACKS"
+
+[[services]]
+  name = "bot-engine"
+  source = "bot-engine"
+
+  [services.deploy]
+    startCommand = "node index.js"
+
+[[services]]
+  name = "website"
+  source = "website"
+
+  [services.build]
+    buildCommand = "npm install && npm run build"
+
+  [services.deploy]
+    startCommand = "npm run start"
