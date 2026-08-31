@@ -43,8 +43,18 @@ function looksLikeServer(body) {
 }
 
 async function resolveParty(rawKey) {
-  const m = rawKey.match(/[?&]party=([A-Z0-9]{4,12})/i);
-  const key = m ? m[1].toUpperCase() : rawKey.trim().toUpperCase();
+  const raw = String(rawKey).trim();
+
+  // ── Direct server address: "1.2.3.4:443" or "?ip=1.2.3.4:443" ──
+  // Skips party resolution entirely. Grab the IP from your mod's server info.
+  const direct = raw.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5})/);
+  if (direct) {
+    console.log(`[resolver] Direct server address: ${direct[1]}`);
+    return { server: direct[1], token: "", key: "direct" };
+  }
+
+  const m = raw.match(/[?&]party=([A-Z0-9]{4,12})/i);
+  const key = m ? m[1].toUpperCase() : raw.toUpperCase();
 
   if (cachedEndpoint) {
     const r = await httpPost(cachedEndpoint.ssl, cachedEndpoint.host, cachedEndpoint.path, key);

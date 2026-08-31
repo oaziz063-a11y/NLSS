@@ -144,9 +144,10 @@ export default function App() {
         <section className="col">
           <div className="card">
             <h3>Session</h3>
-            <label>Party link</label>
+            <label>Party link or server IP</label>
             <input value={party} onChange={(e) => setParty(e.target.value)}
-              placeholder="https://r.agar.io/?party=SJPCXC" disabled={st.running} />
+              placeholder="?party=SJPCXC  or  34.87.12.44:443" disabled={st.running} />
+            <div className="hint">Party codes need resolving and may fail. Pasting the raw server IP:PORT from your mod always works.</div>
 
             <label>Your UID or in-game name</label>
             <input className="mono" value={uid} onChange={(e) => setUid(e.target.value)}
