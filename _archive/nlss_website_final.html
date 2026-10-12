@@ -217,6 +217,33 @@
     .feature h3 { font-size: 1.05rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
     .feature p { color: var(--muted); font-size: 1.05rem; }
 
+    /* ---------- How it works ---------- */
+    .how { border-top: 1px solid rgba(255,255,255,0.05); }
+    .steps {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      counter-reset: step;
+    }
+    .step {
+      padding: 32px 28px;
+      border-radius: var(--radius);
+      border-top: 3px solid var(--orange);
+      background: var(--panel);
+    }
+    .step-num {
+      display: block;
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 2.2rem;
+      color: rgba(241, 196, 15, 0.35);
+      margin-bottom: 12px;
+    }
+    .step h3 { font-size: 1.05rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+    .step p { color: var(--muted); font-size: 1.05rem; }
+    @media (max-width: 720px) { .steps { grid-template-columns: 1fr; } }
+
     /* ---------- Stats ---------- */
     .stats {
       background: linear-gradient(180deg, transparent, rgba(230, 126, 34, 0.08), transparent);
@@ -376,7 +403,48 @@
             <h3>Customization</h3>
             <p>Personalize your warrior with skins, emotes, and gear. Stand out from the crowd with your own style.</p>
           </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">🎁</div>
+            <h3>Daily rewards</h3>
+            <p>Log in every day to claim rewards and build a streak. Come back often to stay ahead of the field.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">🛡️</div>
+            <h3>Duel arenas</h3>
+            <p>Challenge rivals one-on-one in dedicated arenas. Test your timing against the best swordsmen.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">💬</div>
+            <h3>Friends &amp; clans</h3>
+            <p>Team up with friends, form a clan, and climb the ranks together.</p>
+          </article>
         </div>
+      </div>
+    </section>
+
+    <section class="how" id="how">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="eyebrow">Get started</span>
+          <h2>How it works</h2>
+        </header>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num">01</span>
+            <h3>Join on Roblox</h3>
+            <p>Open NLSS from the Roblox page. It's free to play.</p>
+          </li>
+          <li class="step">
+            <span class="step-num">02</span>
+            <h3>Pick your blade</h3>
+            <p>Start with a starter sword and unlock the rest as you play.</p>
+          </li>
+          <li class="step">
+            <span class="step-num">03</span>
+            <h3>Fight and climb</h3>
+            <p>Win duels, earn rewards, and rise up the ranked leaderboard.</p>
+          </li>
+        </ol>
       </div>
     </section>
 
