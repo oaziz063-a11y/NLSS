@@ -1,627 +1,489 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NLSS - Ultimate Sword Fighting Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NLSS is an ultimate sword-fighting arena on Roblox. Master your blade, defeat your enemies, and climb the ranks.">
+  <title>NLSS — Ultimate Sword Fighting Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #e67e22;
+      --orange-deep: #c2410c;
+      --gold: #f1c40f;
+      --ink: #0b0b0c;
+      --panel: rgba(255, 255, 255, 0.04);
+      --line: rgba(230, 126, 34, 0.35);
+      --text: #f5f5f5;
+      --muted: #a3a3a3;
+      --radius: 18px;
+      --display: 'Orbitron', 'Segoe UI', sans-serif;
+      --body: 'Rajdhani', 'Segoe UI', sans-serif;
+    }
 
-        :root {
-            --primary-orange: #E67E22;
-            --dark-orange: #D35400;
-            --gold: #F1C40F;
-            --dark-gold: #B7950B;
-            --bg-dark: #1A1A1A;
-            --bg-darker: #0D0D0D;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      font-family: var(--body);
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(900px 600px at 15% 0%, rgba(230, 126, 34, 0.22), transparent 60%),
+        radial-gradient(800px 600px at 100% 100%, rgba(241, 196, 15, 0.12), transparent 60%),
+        linear-gradient(180deg, #14100d 0%, var(--ink) 100%);
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
 
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background: var(--bg-darker);
-            color: white;
-            overflow-x: hidden;
-        }
+    .wrap { width: min(1120px, 100% - 40px); margin-inline: auto; }
+    .eyebrow {
+      font-family: var(--display);
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    h1, h2, h3 { font-family: var(--display); line-height: 1.15; }
 
-        /* Animated Background */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, #2C1810 50%, var(--bg-darker) 100%);
-        }
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 11, 12, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .site-header .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 68px;
+    }
+    .brand {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav { display: flex; align-items: center; gap: 28px; }
+    .nav a:not(.btn) {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: 0.85;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav a:not(.btn):hover { opacity: 1; color: var(--gold); }
 
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
-            box-shadow: 0 0 10px var(--gold), 0 0 20px var(--primary-orange);
-        }
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: 2px solid var(--gold);
+      background: linear-gradient(135deg, var(--orange), var(--orange-deep));
+      color: #fff;
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(230, 126, 34, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(230, 126, 34, 0.5); filter: brightness(1.05); }
+    .btn-lg { padding: 18px 40px; font-size: 1.05rem; }
+    .btn-ghost { background: none; box-shadow: none; border-color: var(--line); color: var(--text); }
+    .btn-ghost:hover { background: rgba(230, 126, 34, 0.1); box-shadow: none; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
-        }
+    /* ---------- Hero ---------- */
+    .hero {
+      min-height: calc(100vh - 68px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 80px 0 96px;
+    }
+    .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+    .hero-mark {
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(4.5rem, 14vw, 9rem);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      background: linear-gradient(180deg, #fff3b0 0%, var(--gold) 35%, var(--orange) 80%, var(--orange-deep) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 40px rgba(230, 126, 34, 0.35));
+    }
+    .hero-title {
+      font-size: clamp(1.4rem, 3.2vw, 2rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .hero-lede {
+      max-width: 560px;
+      font-size: 1.3rem;
+      color: var(--muted);
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 10px; }
+    .hero-logo {
+      width: clamp(120px, 18vw, 180px);
+      height: auto;
+      border-radius: 24px;
+      box-shadow: 0 0 60px rgba(230, 126, 34, 0.25);
+    }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--primary-orange);
-        }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.45);
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4b5563;
+    }
+    .status.is-live .status-dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; animation: pulse 2s infinite; }
+    .status.is-live { color: var(--text); }
+    @keyframes pulse { 50% { opacity: 0.35; } }
 
-        .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--primary-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(230, 126, 34, 0.5);
-        }
+    /* ---------- Sections ---------- */
+    section { padding: 96px 0; }
+    .section-head { text-align: center; margin-bottom: 56px; display: grid; gap: 12px; }
+    .section-head h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: 0.06em; text-transform: uppercase; }
+    .section-head p { color: var(--muted); max-width: 560px; margin-inline: auto; }
 
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
+    /* ---------- Features ---------- */
+    .features { border-top: 1px solid rgba(255,255,255,0.05); }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 960px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px) { .feature-grid { grid-template-columns: 1fr; } }
+    .feature {
+      padding: 32px 28px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--panel);
+      transition: border-color 0.25s, transform 0.25s, background 0.25s;
+    }
+    .feature:hover { border-color: var(--line); background: rgba(230, 126, 34, 0.06); transform: translateY(-4px); }
+    .feature-icon {
+      width: 52px; height: 52px;
+      display: grid; place-items: center;
+      border-radius: 14px;
+      background: rgba(230, 126, 34, 0.14);
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+    .feature h3 { font-size: 1.05rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+    .feature p { color: var(--muted); font-size: 1.05rem; }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            position: relative;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    /* ---------- Stats ---------- */
+    .stats {
+      background: linear-gradient(180deg, transparent, rgba(230, 126, 34, 0.08), transparent);
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      text-align: center;
+    }
+    .stat {
+      padding: 36px 20px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--panel);
+    }
+    .stat-value {
+      display: block;
+      font-family: var(--display);
+      font-weight: 900;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+      min-height: 1.2em;
+    }
+    .stat-value-text { font-size: clamp(1.5rem, 2.6vw, 2rem); padding-top: 0.5em; white-space: nowrap; }
+    .stat-label {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .stats-note { text-align: center; color: var(--muted); font-size: 0.95rem; margin-top: 20px; }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s;
-        }
+    /* ---------- CTA band ---------- */
+    .cta {
+      text-align: center;
+      padding: 88px 24px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(230, 126, 34, 0.18), rgba(0, 0, 0, 0.4));
+    }
+    .cta h2 { font-size: clamp(1.6rem, 3.6vw, 2.4rem); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .cta p { color: var(--muted); margin-bottom: 30px; }
 
-        .nav-links a:hover {
-            color: var(--gold);
-        }
+    /* ---------- Footer ---------- */
+    .site-footer {
+      border-top: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+    .site-footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .site-footer a { color: var(--gold); text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
 
-        .nav-links a:hover::after {
-            width: 100%;
-        }
+    /* ---------- Responsive ---------- */
+    @media (max-width: 720px) {
+      body { font-size: 17px; }
+      .wrap { width: min(100% - 32px, 1120px); }
+      .nav a:not(.btn) { display: none; }
+      .site-header .wrap { height: 60px; }
+      .brand { font-size: 1.3rem; }
+      .btn-lg { width: 100%; padding: 16px 24px; }
+      .hero { min-height: auto; padding: 56px 0 72px; }
+      .hero-lede { font-size: 1.1rem; }
+      section { padding: 72px 0; }
+      .stat { padding: 28px 16px; }
+      .cta { padding: 64px 20px; }
+    }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 100px 20px;
-            position: relative;
-        }
-
-        .hero-logo {
-            width: 300px;
-            height: 300px;
-            margin-bottom: 30px;
-            position: relative;
-            animation: pulse 2s infinite ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(230, 126, 34, 0.5)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(230, 126, 34, 0.8)); }
-        }
-
-        .hero-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 20px;
-        }
-
-        /* SVG Logo Fallback */
-        .logo-svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--primary-orange) 50%, var(--dark-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            color: #ccc;
-            margin-bottom: 40px;
-            max-width: 600px;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 20px 60px;
-            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--dark-orange) 100%);
-            color: white;
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(230, 126, 34, 0.5);
-            border: 3px solid var(--gold);
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(230, 126, 34, 0.7);
-        }
-
-        /* Live Status Badge */
-        .live-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0,0,0,0.6);
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 2px solid var(--gold);
-            margin-bottom: 30px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .live-dot {
-            width: 12px;
-            height: 12px;
-            background: #00ff00;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-            box-shadow: 0 0 10px #00ff00;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 50px;
-            background: rgba(0,0,0,0.5);
-        }
-
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 60px;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, rgba(230, 126, 34, 0.1) 0%, rgba(0,0,0,0.8) 100%);
-            border: 2px solid var(--primary-orange);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(230, 126, 34, 0.3);
-        }
-
-        .feature-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: var(--gold);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .feature-card p {
-            color: #aaa;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        /* Stats Section */
-        .stats {
-            padding: 80px 50px;
-            display: flex;
-            justify-content: center;
-            gap: 80px;
-            flex-wrap: wrap;
-            background: linear-gradient(180deg, transparent 0%, rgba(230, 126, 34, 0.1) 50%, transparent 100%);
-        }
-
-        .stat-item {
-            text-align: center;
-            position: relative;
-        }
-
-        .stat-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--gold);
-            display: block;
-            text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
-        }
-
-        .stat-label {
-            font-size: 1.2rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .loading {
-            animation: pulse 1s infinite;
-        }
-
-        .error {
-            color: #ff4444;
-            font-size: 2rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 50px;
-            text-align: center;
-            border-top: 2px solid var(--primary-orange);
-            background: rgba(0,0,0,0.9);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .social-links a {
-            width: 60px;
-            height: 60px;
-            border: 2px solid var(--primary-orange);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gold);
-            font-size: 1.5rem;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .social-links a:hover {
-            background: var(--primary-orange);
-            color: white;
-            transform: rotate(360deg) scale(1.1);
-        }
-
-        footer p {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero-logo { width: 200px; height: 200px; }
-            .nav-links { display: none; }
-            .features { padding: 50px 20px; }
-            .stats { gap: 40px; }
-            .stat-number { font-size: 3rem; }
-        }
-    </style>
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <div class="bg-animation" id="sparksContainer"></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="#top" class="brand" aria-label="NLSS home">NLSS</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#stats">Stats</a>
+        <a class="btn" href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" rel="noopener">Play now</a>
+      </nav>
+    </div>
+  </header>
 
-    <nav>
-        <div class="logo-text">NLSS</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#stats">Stats</a></li>
-            <li><a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank">Play Now</a></li>
-        </ul>
-    </nav>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <span class="status" id="status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">Connecting to Roblox…</span>
+        </span>
 
-    <section class="hero" id="home">
-        <div class="live-status">
-            <div class="live-dot"></div>
-            <span>LIVE GAME DATA</span>
+        <img class="hero-logo" src="nlss_logo.png" alt="" data-fallback-hide>
+        <h1 class="hero-mark">NLSS</h1>
+        <p class="hero-title">Ultimate Sword Fighting Arena</p>
+        <p class="hero-lede">Master your blade, defeat your enemies, and become the legendary warrior in the most intense Roblox combat experience.</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-lg" href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" rel="noopener">
+            <span aria-hidden="true">⚔️</span> Play on Roblox
+          </a>
+          <a class="btn btn-lg btn-ghost" href="#features">Explore features</a>
         </div>
-        <div class="hero-logo">
-            <!-- Try to load the image, fallback to text if it fails -->
-            <img src="nlss_logo.png" alt="NLSS Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'font-family: Orbitron; font-size: 4rem; color: #F1C40F;\'>NLSS</div>';">
-        </div>
-        <h1>NLSS</h1>
-        <p>Enter the ultimate sword fighting arena. Master your blade, defeat your enemies, and become the legendary warrior in the most intense Roblox combat experience.</p>
-        <a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" class="cta-button">⚔️ Play Now on Roblox</a>
+      </div>
     </section>
 
     <section class="features" id="features">
-        <h2 class="section-title">Game Features</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">⚔️</div>
-                <h3>Intense Combat</h3>
-                <p>Fast-paced sword fighting mechanics with combo systems, parries, and special moves. Every battle tests your skill and reflexes.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏆</div>
-                <h3>Ranked Matches</h3>
-                <p>Climb the leaderboard in competitive ranked mode. Prove you're the best warrior and earn exclusive rewards.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Unique Abilities</h3>
-                <p>Unlock and master special powers and abilities. Customize your fighting style to dominate the arena.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🗡️</div>
-                <h3>Legendary Weapons</h3>
-                <p>Collect 7 unique swords with different stats and designs. Show off your arsenal to other players.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3>Team Battles</h3>
-                <p>Join forces with friends in epic team battles. Coordinate strategies and conquer the battlefield together.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎨</div>
-                <h3>Customization</h3>
-                <p>Personalize your warrior with skins, emotes, and gear. Stand out from the crowd with your unique style.</p>
-            </div>
+      <div class="wrap">
+        <header class="section-head">
+          <span class="eyebrow">Why NLSS</span>
+          <h2>Game features</h2>
+          <p>Everything a sword-fighter needs, from combat depth to the long road to the top of the leaderboard.</p>
+        </header>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">⚔️</div>
+            <h3>Intense combat</h3>
+            <p>Fast-paced sword mechanics with combos, parries, and special moves. Every battle tests your skill and reflexes.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">🏆</div>
+            <h3>Ranked matches</h3>
+            <p>Climb the leaderboard in competitive ranked mode, prove you're the best warrior, and earn exclusive rewards.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">⚡</div>
+            <h3>Unique abilities</h3>
+            <p>Unlock and master special powers. Shape your fighting style to dominate the arena.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">🗡️</div>
+            <h3>Legendary weapons</h3>
+            <p>Collect seven swords, each with its own stats and design. Show off your arsenal to other players.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">👥</div>
+            <h3>Team battles</h3>
+            <p>Join friends in epic team fights. Coordinate your strategy and take the battlefield together.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon" aria-hidden="true">🎨</div>
+            <h3>Customization</h3>
+            <p>Personalize your warrior with skins, emotes, and gear. Stand out from the crowd with your own style.</p>
+          </article>
         </div>
+      </div>
     </section>
 
     <section class="stats" id="stats">
-        <div class="stat-item">
-            <span class="stat-number loading" id="activePlayers">Loading...</span>
-            <span class="stat-label">Active Players</span>
+      <div class="wrap">
+        <header class="section-head">
+          <span class="eyebrow">By the numbers</span>
+          <h2>Live stats</h2>
+        </header>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-value" id="activePlayers">—</span>
+            <span class="stat-label">Active players</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="gameVisits">—</span>
+            <span class="stat-label">Game visits</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">7</span>
+            <span class="stat-label">Unique swords</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value stat-value-text">Coming soon</span>
+            <span class="stat-label">Game modes</span>
+          </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-number loading" id="gameVisits">Loading...</span>
-            <span class="stat-label">Game Visits</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-number" id="swordCount">7</span>
-            <span class="stat-label">Unique Swords</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-number" id="gameModes">Coming Soon</span>
-            <span class="stat-label">Game Modes</span>
-        </div>
+        <p class="stats-note" id="statsNote"></p>
+      </div>
     </section>
 
-    <footer>
-        <div class="social-links">
-            <a href="#" title="Discord">💬</a>
-            <a href="#" title="Twitter">🐦</a>
-            <a href="#" title="YouTube">📺</a>
-            <a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" title="Roblox">🎮</a>
-        </div>
-        <p>© 2026 NLSS. All rights reserved. Made with ⚔️ for Roblox warriors.</p>
-    </footer>
+    <section class="wrap">
+      <div class="cta">
+        <h2>Ready to take up your blade?</h2>
+        <p>Jump into the arena on Roblox and start your climb.</p>
+        <a class="btn btn-lg" href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" rel="noopener">
+          <span aria-hidden="true">⚔️</span> Play now on Roblox
+        </a>
+      </div>
+    </section>
+  </main>
 
-    <script>
-        // Generate floating sparks
-        const sparksContainer = document.getElementById('sparksContainer');
-        for (let i = 0; i < 20; i++) {
-            const spark = document.createElement('div');
-            spark.className = 'spark';
-            spark.style.left = Math.random() * 100 + '%';
-            spark.style.animationDelay = Math.random() * 6 + 's';
-            spark.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            sparksContainer.appendChild(spark);
-        }
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2026 NLSS. All rights reserved.</span>
+      <a href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" rel="noopener">Game on Roblox →</a>
+    </div>
+  </footer>
 
-        // Roblox Game Configuration
-        const PLACE_ID = '129483753300243';
+  <script>
+    // Hide the logo image if the file isn't present; the wordmark carries the page.
+    document.querySelectorAll('img[data-fallback-hide]').forEach((img) => {
+      img.addEventListener('error', () => img.remove());
+    });
 
-        // Function to fetch live game data from Roblox API using CORS proxy
-        async function fetchRobloxData() {
-            try {
-                // Using a CORS proxy to bypass browser restrictions
-                const proxyUrl = 'https://api.allorigins.win/get?url=';
+    // Live stats from the Roblox public API. Roblox doesn't allow cross-origin
+    // reads from every origin, so if the request is blocked we show a note
+    // instead of a fake number. No third-party proxy is used.
+    const PLACE_ID = '129483753300243';
+    const formatter = new Intl.NumberFormat();
 
-                // First, get the universe ID from place ID
-                const universeApiUrl = `https://apis.roblox.com/universes/v1/places/${PLACE_ID}/universe`;
-                const universeResponse = await fetch(proxyUrl + encodeURIComponent(universeApiUrl));
+    function setStatus(text, live) {
+      document.getElementById('statusText').textContent = text;
+      document.getElementById('status').classList.toggle('is-live', live);
+    }
 
-                if (!universeResponse.ok) throw new Error('Failed to fetch universe ID');
-                const universeDataRaw = await universeResponse.json();
-                const universeData = JSON.parse(universeDataRaw.contents);
-                const universeId = universeData.universeId;
-
-                // Then, get the game data using universe ID
-                const gameApiUrl = `https://games.roblox.com/v1/games?universeIds=${universeId}`;
-                const gameResponse = await fetch(proxyUrl + encodeURIComponent(gameApiUrl));
-
-                if (!gameResponse.ok) throw new Error('Failed to fetch game data');
-                const gameDataRaw = await gameResponse.json();
-                const gameData = JSON.parse(gameDataRaw.contents);
-
-                if (gameData.data && gameData.data.length > 0) {
-                    const game = gameData.data[0];
-                    return {
-                        playing: game.playing || 0,
-                        visits: game.visits || 0,
-                        name: game.name,
-                        updated: game.updated
-                    };
-                }
-                throw new Error('No game data found');
-            } catch (error) {
-                console.error('Error fetching Roblox data:', error);
-                return null;
-            }
-        }
-
-        // Update stats on page
-        async function updateStats() {
-            const activePlayersEl = document.getElementById('activePlayers');
-            const gameVisitsEl = document.getElementById('gameVisits');
-
-            const data = await fetchRobloxData();
-
-            if (data) {
-                // Animate the numbers
-                animateValue(activePlayersEl, 0, data.playing, 1000);
-                animateValue(gameVisitsEl, 0, data.visits, 1500);
-
-                // Remove loading class
-                activePlayersEl.classList.remove('loading');
-                gameVisitsEl.classList.remove('loading');
-            } else {
-                // If API fails, show placeholder data
-                activePlayersEl.textContent = '0';
-                gameVisitsEl.textContent = '0';
-                activePlayersEl.classList.remove('loading');
-                gameVisitsEl.classList.remove('loading');
-            }
-        }
-
-        // Number animation function
-        function animateValue(obj, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
-                obj.textContent = value.toLocaleString();
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                } else {
-                    obj.textContent = end.toLocaleString();
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // Fetch data immediately when page loads
-        updateStats();
-
-        // Refresh data every 30 seconds to keep it live
-        setInterval(updateStats, 30000);
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
+    async function loadStats() {
+      try {
+        const universe = await fetch(`https://apis.roblox.com/universes/v1/places/${PLACE_ID}/universe`).then((r) => {
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
         });
-
-        // Parallax effect on scroll
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero-logo');
-            if (parallax) {
-                parallax.style.transform = `translateY(${scrolled * 0.3}px)`;
-            }
+        const game = await fetch(`https://games.roblox.com/v1/games?universeIds=${universe.universeId}`).then((r) => {
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
         });
-    </script>
+        const data = game.data && game.data[0];
+        if (!data) throw new Error('no data');
+
+        animateValue(document.getElementById('activePlayers'), data.playing || 0);
+        animateValue(document.getElementById('gameVisits'), data.visits || 0);
+        setStatus(`${formatter.format(data.playing || 0)} playing now`, true);
+      } catch {
+        document.getElementById('activePlayers').textContent = '—';
+        document.getElementById('gameVisits').textContent = '—';
+        setStatus('Live data unavailable', false);
+        document.getElementById('statsNote').textContent =
+          'Live numbers come from Roblox and could not be loaded right now. Try again later.';
+      }
+    }
+
+    function animateValue(el, end) {
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { el.textContent = formatter.format(end); return; }
+      const duration = 1000;
+      const start = performance.now();
+      const step = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        el.textContent = formatter.format(Math.floor(p * end));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    loadStats();
+    setInterval(loadStats, 30000);
+  </script>
 </body>
 </html>
