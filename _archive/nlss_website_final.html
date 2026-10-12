@@ -717,50 +717,54 @@
 
     /* ---------- Leaderboard ---------- */
     .nav a { white-space: nowrap; }
-    .board-panel {
-      max-width: 880px;
+    .board-card {
+      max-width: 920px;
       margin: 0 auto;
-      padding: 26px;
-      border-radius: var(--radius);
+      padding: 28px;
+      border-radius: 24px;
       border: 1px solid var(--line-soft);
       background: var(--panel);
       box-shadow: var(--card-shadow);
     }
-    .board-top {
+    .board-bar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 14px 20px;
+      margin-bottom: 28px;
     }
     .tabs {
       display: inline-flex;
       gap: 4px;
-      padding: 5px;
-      border-radius: 999px;
+      padding: 4px;
+      border-radius: 14px;
       border: 1px solid var(--line-soft);
       background: var(--ink);
     }
     .tab {
-      padding: 9px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
       border: 0;
-      border-radius: 999px;
+      border-radius: 10px;
       background: transparent;
       color: var(--muted);
       font-family: var(--display);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
+    .tab .ico { width: 16px; height: 16px; }
     .tab:hover { color: var(--text); }
     .tab[aria-selected="true"] {
       background: linear-gradient(135deg, var(--orange), var(--orange-deep));
       color: #fff;
-      box-shadow: 0 8px 20px var(--glow);
+      box-shadow: 0 8px 18px var(--glow);
     }
     .board-meta { font-size: 0.92rem; color: var(--muted); }
     .demo-badge {
@@ -773,64 +777,125 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
-    .board-scroll {
-      max-height: 560px;
-      overflow-y: auto;
-      padding: 2px 8px 2px 2px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--line) transparent;
-    }
-    .board { list-style: none; display: grid; gap: 10px; }
-    .board li {
+
+    /* Podium: 2nd, 1st, 3rd, with the leader tallest. */
+    .podium {
+      list-style: none;
       display: grid;
-      grid-template-columns: 48px minmax(0, 1fr) auto;
-      align-items: center;
+      grid-template-columns: 1fr 1.08fr 1fr;
+      align-items: end;
       gap: 14px;
-      padding: 12px 18px;
-      border-radius: 14px;
+      margin-bottom: 28px;
+    }
+    .podium li {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 6px;
+      min-height: 150px;
+      padding: 22px 14px 18px;
+      border-radius: 18px;
       border: 1px solid var(--line-soft);
       background: var(--ink-2);
+      text-align: center;
     }
-    .board li.top-1 { border-color: rgba(241, 196, 15, 0.45); }
-    .rank span {
+    .podium li.top-1 {
+      order: 2;
+      min-height: 200px;
+      border-color: rgba(241, 196, 15, 0.45);
+      background: linear-gradient(180deg, rgba(241, 196, 15, 0.12), transparent 70%), var(--ink-2);
+    }
+    .podium li.top-2 { order: 1; }
+    .podium li.top-3 { order: 3; }
+    .podium li.empty { border-style: dashed; background: transparent; }
+    .place {
       display: grid;
       place-items: center;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 4px;
       border-radius: 50%;
       background: var(--panel-hover);
       color: var(--muted);
       font-family: var(--display);
       font-weight: 900;
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
-    .top-1 .rank span { background: linear-gradient(135deg, #fde68a, #f59e0b); color: #111; }
-    .top-2 .rank span { background: linear-gradient(135deg, #f3f4f6, #9ca3af); color: #111; }
-    .top-3 .rank span { background: linear-gradient(135deg, #fcd9b6, #c2410c); color: #111; }
-    .board .name {
-      min-width: 0;
+    .top-1 .place { background: linear-gradient(135deg, #fde68a, #f59e0b); color: #111; }
+    .top-2 .place { background: linear-gradient(135deg, #f3f4f6, #9ca3af); color: #111; }
+    .top-3 .place { background: linear-gradient(135deg, #fcd9b6, #c2410c); color: #111; }
+    .podium .name {
+      max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
     }
-    .board .value {
+    .podium .value {
       font-family: var(--display);
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       color: var(--accent-text);
     }
-    .board-status { padding: 46px 12px; text-align: center; color: var(--muted); font-size: 1.05rem; }
+    .podium li.empty .name, .podium li.empty .value { color: var(--muted); }
+
+    /* Ranks 4 to 100 in a scrollable list. */
+    .board-scroll {
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) transparent;
+    }
+    .board-scroll[hidden] { display: none; }
+    .board { list-style: none; }
+    .board li {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+    .board li + li { border-top: 1px solid var(--line-soft); }
+    .board li:hover { background: var(--panel-hover); }
+    .board .rank {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .board .name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 1.08rem;
+    }
+    .board .value {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent-text);
+    }
+    .board-status { padding: 40px 12px 12px; text-align: center; color: var(--muted); font-size: 1.05rem; }
     .board-status[hidden] { display: none; }
     @media (max-width: 620px) {
-      .board-panel { padding: 18px; }
+      .board-card { padding: 18px; border-radius: 20px; }
       .tabs { display: flex; width: 100%; }
-      .tab { flex: 1; padding: 9px 6px; font-size: 0.68rem; letter-spacing: 0.06em; }
-      .board-scroll { max-height: 480px; }
-      .board li { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; padding: 10px 12px; }
-      .rank span { width: 32px; height: 32px; }
-      .board .name { font-size: 1rem; }
+      .tab { flex: 1; justify-content: center; padding: 9px 6px; font-size: 0.66rem; letter-spacing: 0.06em; }
+      .tab .ico { display: none; }
+      .podium { gap: 8px; }
+      .podium li { min-height: 120px; padding: 16px 8px 12px; }
+      .podium li.top-1 { min-height: 150px; }
+      .podium .name { font-size: 1rem; }
+      .board li { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; padding: 10px 8px; }
+      .board-scroll { max-height: 420px; }
     }
 
     /* ---------- Responsive ---------- */
@@ -1057,17 +1122,19 @@
           <p>The top 100 players in strength, kills and rebirths.</p>
         </header>
 
-        <div class="board-panel reveal">
-          <div class="board-top">
+        <div class="board-card reveal">
+          <div class="board-bar">
             <div class="tabs" role="tablist" aria-label="Leaderboard category">
-              <button class="tab" type="button" role="tab" id="tab-strength" data-cat="strength" aria-selected="true" aria-controls="board-panel" tabindex="0">Strength</button>
-              <button class="tab" type="button" role="tab" id="tab-kills" data-cat="kills" aria-selected="false" aria-controls="board-panel" tabindex="-1">Kills</button>
-              <button class="tab" type="button" role="tab" id="tab-rebirths" data-cat="rebirths" aria-selected="false" aria-controls="board-panel" tabindex="-1">Rebirths</button>
+              <button class="tab" type="button" role="tab" id="tab-strength" data-cat="strength" aria-selected="true" aria-controls="board-panel" tabindex="0"><svg class="ico" aria-hidden="true"><use href="#i-zap"/></svg>Strength</button>
+              <button class="tab" type="button" role="tab" id="tab-kills" data-cat="kills" aria-selected="false" aria-controls="board-panel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-swords"/></svg>Kills</button>
+              <button class="tab" type="button" role="tab" id="tab-rebirths" data-cat="rebirths" aria-selected="false" aria-controls="board-panel" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg>Rebirths</button>
             </div>
-            <span class="board-meta" id="board-meta"></span>
+            <p class="board-meta" id="board-meta"></p>
           </div>
+
           <div role="tabpanel" id="board-panel" aria-labelledby="tab-strength">
-            <div class="board-scroll" id="board-scroll" role="region" tabindex="0" aria-label="Top 100 by strength">
+            <ol class="podium" id="podium" aria-label="Top three"></ol>
+            <div class="board-scroll" id="board-scroll" role="region" tabindex="0" aria-label="Top 100 by strength" hidden>
               <ol class="board" id="board"></ol>
             </div>
             <p class="board-status" id="board-status" role="status">Loading rankings…</p>
@@ -1586,9 +1653,11 @@
         const LEADERBOARD_URL = '';
         const INLINE_RANKINGS = { updated: null, strength: [], kills: [], rebirths: [] };
         const TOP_N = 100;
+        const PODIUM_N = 3;
         const REFRESH_MS = 5 * 60 * 1000;
         const fmtValue = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
         const tabs = [...document.querySelectorAll('#leaderboard .tab')];
+        const podium = document.getElementById('podium');
         const board = document.getElementById('board');
         const boardScroll = document.getElementById('board-scroll');
         const boardPanel = document.getElementById('board-panel');
@@ -1619,40 +1688,46 @@
           };
         }
 
-        function row(entry, rank) {
+        function cell(tag, className, text) {
+          const el = document.createElement(tag);
+          el.className = className;
+          el.textContent = text;
+          return el;
+        }
+
+        function podiumItem(entry, rank) {
           const li = document.createElement('li');
-          if (rank <= 3) li.classList.add(`top-${rank}`);
-          const rankCell = document.createElement('span');
-          rankCell.className = 'rank';
-          const badge = document.createElement('span');
-          badge.textContent = String(rank);
-          rankCell.append(badge);
-          const name = document.createElement('span');
-          name.className = 'name';
-          name.textContent = entry.name;
+          li.className = `top-${rank}`;
+          const name = cell('span', 'name', entry ? entry.name : '—');
+          if (entry) name.title = entry.name;
+          const value = cell('span', 'value', entry ? fmtValue.format(entry.value) : '—');
+          li.append(cell('span', 'place', String(rank)), name, value);
+          if (!entry) li.classList.add('empty');
+          return li;
+        }
+
+        function rowItem(entry, rank) {
+          const li = document.createElement('li');
+          const name = cell('span', 'name', entry.name);
           name.title = entry.name;
-          const value = document.createElement('span');
-          value.className = 'value';
-          value.textContent = fmtValue.format(entry.value);
-          li.append(rankCell, name, value);
+          li.append(cell('span', 'rank', String(rank)), name, cell('span', 'value', fmtValue.format(entry.value)));
           return li;
         }
 
         function render() {
           const list = state === 'ready' ? clean(rankings[current]) : [];
-          board.replaceChildren(...list.map((entry, i) => row(entry, i + 1)));
+          podium.replaceChildren(...Array.from({ length: PODIUM_N }, (_, i) => podiumItem(list[i], i + 1)));
+          board.replaceChildren(...list.slice(PODIUM_N).map((entry, i) => rowItem(entry, i + PODIUM_N + 1)));
+          boardScroll.hidden = list.length <= PODIUM_N;
+          boardScroll.setAttribute('aria-label', `Top ${TOP_N} by ${current}`);
           statusEl.hidden = list.length > 0;
           statusEl.textContent = state === 'loading' ? 'Loading rankings…'
             : state === 'error' ? "Rankings couldn't be loaded right now. Try again later."
             : 'No rankings published yet.';
-          boardScroll.setAttribute('aria-label', `Top ${TOP_N} by ${current}`);
 
           metaEl.replaceChildren();
           if (state === 'ready' && demo) {
-            const badge = document.createElement('span');
-            badge.className = 'demo-badge';
-            badge.textContent = 'Demo data, not real players';
-            metaEl.append(badge);
+            metaEl.append(cell('span', 'demo-badge', 'Demo data, not real players'));
           } else if (state === 'ready' && rankings.updated) {
             const date = new Date(rankings.updated);
             metaEl.textContent = `Updated ${date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}`;
