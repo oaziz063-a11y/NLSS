@@ -124,20 +124,17 @@
     h1, h2, h3 { font-family: var(--display); line-height: 1.15; }
 
     .wrap { width: min(1120px, 100% - 40px); margin-inline: auto; }
-    .section { position: relative; padding: 112px 0; border-top: 1px solid var(--line-soft); }
+    .section { position: relative; padding: 104px 0; border-top: 1px solid var(--line-soft); }
     .eyebrow {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line-soft);
-      background: var(--panel);
+      display: block;
       font-family: var(--display);
-      font-size: 0.72rem;
+      font-size: 0.74rem;
+      font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--accent-text);
     }
-    .section-head { text-align: center; margin-bottom: 60px; display: grid; gap: 14px; justify-items: center; }
+    .section-head { text-align: center; margin-bottom: 52px; display: grid; gap: 12px; justify-items: center; }
     .section-head h2 { font-size: clamp(2rem, 4.4vw, 3rem); letter-spacing: 0.05em; text-transform: uppercase; }
     .section-head p { color: var(--muted); max-width: 580px; font-size: 1.12rem; }
 
@@ -335,15 +332,11 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 7px 15px;
-      border-radius: 999px;
-      border: 1px solid var(--line-soft);
-      background: var(--panel);
       font-size: 0.95rem;
       color: var(--muted);
     }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #6b7280; }
-    .status.is-live { color: var(--text); border-color: var(--line); }
+    .status.is-live { color: var(--text); }
     .status.is-live .dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; animation: pulse 2s infinite; }
     @keyframes pulse { 50% { opacity: 0.35; } }
 
@@ -368,15 +361,6 @@
       text-transform: uppercase;
     }
     .hero-lede { max-width: 540px; font-size: 1.27rem; color: var(--muted); }
-    .chips { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; }
-    .chips li {
-      padding: 6px 13px;
-      border-radius: 10px;
-      border: 1px solid var(--line-soft);
-      background: var(--panel);
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 4px; }
 
     .hero-art {
@@ -405,30 +389,6 @@
     @keyframes emblem-in { from { transform: scale(0.8) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
     @keyframes ring { from { transform: scale(0.2); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
     @keyframes sparks { from { transform: scale(0.3); opacity: 0; } 40% { opacity: 1; } to { transform: scale(1.3); opacity: 0; } }
-
-    /* ---------- Ticker ---------- */
-    .ticker {
-      position: relative;
-      overflow: hidden;
-      border-block: 1px solid var(--line-soft);
-      background: var(--panel);
-    }
-    .ticker-track { display: flex; width: max-content; animation: ticker 32s linear infinite; }
-    .ticker:hover .ticker-track { animation-play-state: paused; }
-    .ticker-group { display: flex; flex: none; }
-    .ticker-group span {
-      padding: 20px 0;
-      padding-right: 58px;
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 0.92rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      white-space: nowrap;
-      color: var(--muted);
-    }
-    .ticker-group span::after { content: "◆"; margin-left: 58px; color: var(--gold); font-size: 0.6rem; vertical-align: middle; }
-    @keyframes ticker { to { transform: translateX(-50%); } }
 
     /* ---------- Bento features ---------- */
     .bento {
@@ -471,28 +431,6 @@
     .card.big h3 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
     .card p { color: var(--muted); font-size: 1.07rem; }
     .card.big p { font-size: 1.22rem; max-width: 520px; }
-    .card .art {
-      position: absolute;
-      right: -26px;
-      bottom: -30px;
-      width: 220px;
-      height: 220px;
-      color: var(--gold);
-      opacity: 0.07;
-      pointer-events: none;
-    }
-    .card .art .ico { width: 100%; height: 100%; stroke-width: 1.2; }
-    .tags { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin-top: 8px; }
-    .tags li {
-      padding: 7px 14px;
-      border-radius: 999px;
-      background: rgba(230, 126, 34, 0.14);
-      color: var(--accent-text);
-      font-family: var(--display);
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
     /* Pointer spotlight that follows the cursor (set by JS). */
     .spot::after {
       content: "";
@@ -734,22 +672,6 @@
     .foot-links a:hover { color: var(--accent-text); text-decoration: underline; }
     .foot-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
     .copy { margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line-soft); font-size: 0.92rem; }
-    .footer-mark {
-      margin-top: 40px;
-      text-align: center;
-      font-family: var(--display);
-      font-weight: 900;
-      font-size: clamp(5rem, 24vw, 17rem);
-      line-height: 0.8;
-      letter-spacing: 0.04em;
-      color: transparent;
-      background: linear-gradient(180deg, rgba(241, 196, 15, 0.28), transparent 85%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      user-select: none;
-      pointer-events: none;
-    }
-
     /* ---------- Back to top + toast ---------- */
     .to-top {
       position: fixed;
@@ -924,7 +846,7 @@
     @media (max-width: 980px) {
       .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
       .hero-copy { justify-items: center; }
-      .chips, .hero-actions { justify-content: center; }
+      .hero-actions { justify-content: center; }
       .hero-art { order: -1; max-width: 300px; }
       .bento { grid-template-columns: repeat(2, 1fr); }
       .card.big { grid-column: span 2; grid-row: span 1; }
@@ -1031,16 +953,9 @@
             <span class="dot" aria-hidden="true"></span>
             <span id="status-text">Connecting to Roblox…</span>
           </span>
-          <p class="eyebrow">Sword combat on Roblox</p>
           <h1 class="hero-title" id="hero-title">NLSS</h1>
           <p class="hero-sub">Ultimate sword fighting arena</p>
           <p class="hero-lede">Master your blade, defeat your enemies, and become the legendary warrior in the most intense Roblox combat experience.</p>
-          <ul class="chips" aria-label="Highlights">
-            <li>Roblox</li>
-            <li>7 legendary swords</li>
-            <li>Ranked mode</li>
-            <li>Team battles</li>
-          </ul>
           <div class="hero-actions">
             <a class="btn btn-lg" href="https://www.roblox.com/games/129483753300243/Coming-soon" target="_blank" rel="noopener">
               <svg class="ico" aria-hidden="true"><use href="#i-swords"/></svg>
@@ -1063,17 +978,6 @@
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <div class="ticker-group">
-          <span>Combos</span><span>Parries</span><span>Legendary blades</span><span>Ranked matches</span><span>Team battles</span><span>Customization</span><span>Unique abilities</span>
-        </div>
-        <div class="ticker-group">
-          <span>Combos</span><span>Parries</span><span>Legendary blades</span><span>Ranked matches</span><span>Team battles</span><span>Customization</span><span>Unique abilities</span>
-        </div>
-      </div>
-    </div>
-
     <section class="section" id="features" aria-labelledby="features-title">
       <div class="wrap">
         <header class="section-head reveal">
@@ -1084,17 +988,11 @@
 
         <div class="bento">
           <article class="card big spot reveal">
-            <div class="art" aria-hidden="true"><svg class="ico"><use href="#i-swords"/></svg></div>
             <div class="card-icon" aria-hidden="true"><svg class="ico"><use href="#i-swords"/></svg></div>
             <div>
               <h3>Intense combat</h3>
               <p>Fast-paced sword fighting mechanics with combo systems, parries, and special moves. Every battle tests your skill and reflexes.</p>
             </div>
-            <ul class="tags" aria-label="Combat highlights">
-              <li>Combos</li>
-              <li>Parries</li>
-              <li>Special moves</li>
-            </ul>
           </article>
           <article class="card spot reveal">
             <div class="card-icon" aria-hidden="true"><svg class="ico"><use href="#i-trophy"/></svg></div>
@@ -1190,7 +1088,6 @@
           <article class="panel spot reveal">
             <div class="panel-top">
               <span class="panel-label">Players right now</span>
-              <span class="panel-label" id="last-updated-inline"></span>
             </div>
             <div class="big-number" id="active-players">—</div>
             <div class="spark-wrap">
@@ -1324,7 +1221,6 @@
       </div>
       <p class="copy">© 2026 NLSS. All rights reserved.</p>
     </div>
-    <div class="footer-mark" aria-hidden="true">NLSS</div>
   </footer>
 
   <button class="to-top" id="to-top" type="button" aria-label="Back to top">
@@ -1508,7 +1404,6 @@
       const activeEl = document.getElementById('active-players');
       const visitsEl = document.getElementById('game-visits');
       const updatedEl = document.getElementById('last-updated');
-      const updatedInline = document.getElementById('last-updated-inline');
       const noteEl = document.getElementById('stats-note');
       const sparkEl = document.getElementById('spark');
       const sparkNote = document.getElementById('spark-note');
@@ -1596,7 +1491,6 @@
           const time = new Date(lastOk).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           updatedEl.textContent = time;
           updatedEl.dataset.set = '1';
-          updatedInline.textContent = `Updated ${time}`;
           setStatus(`${fmt.format(playing)} playing now`, true);
           noteEl.textContent = 'Refreshes every minute while this tab is open.';
         } catch (err) {
